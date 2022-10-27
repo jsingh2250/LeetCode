@@ -1,94 +1,68 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 class Solution {
     // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-    public int maxLengthHelper(List<String> arr, int arrIndex, HashSet<Character> charactersInConcatenatedString,
-            int lengthOfLongestConcatenatedString) {
-        // If the list index is equal to the size of the list, return the length of the longest concatenated string found so far.
+    public int maxLengthHelper(List<String> arr, int arrIndex, String concatenatedSubsequence,
+            int lengthOfLongestConcatenatedSubsequence) {
+        // If the list index is equal to the size of the list, return the length of the longest concatenated subsequence.
         if (arrIndex == arr.size()) {
-            return lengthOfLongestConcatenatedString;
+            return lengthOfLongestConcatenatedSubsequence;
         }
 
-        // Check the length of each concatenated subsequence of string elements that has unique characters.
+        // Determine the length of each concatenated subsequence that has unique characters.
         for (int i = arrIndex; i < arr.size(); i++) {
-            // Store the a string from the list of strings.
+            // Store the string from the list of strings.
             String string = arr.get(i);
 
-            // Create a new set to store the characters in the string.
-            int numberOfLettersInAlphabet = 26;
-            HashSet<Character> charactersInString = new HashSet<>(numberOfLettersInAlphabet);
-
-            // If the characters in the string are unique, add them to the new character set.
-            boolean charactersInStringAreUnique = true;
+            // Determine whether the characters in the string are unique within the string and within the subsequence.
+            boolean areCharactersUnique = false;
             for (int stringIndex = 0; stringIndex < string.length(); stringIndex++) {
-                Character character = string.charAt(stringIndex);
-                if (charactersInConcatenatedString.contains(character) || charactersInString.contains(character)) {
-                    charactersInStringAreUnique = false;
+                // Get a character from the string.
+                String character = string.substring(stringIndex, stringIndex + 1);
+
+                // Determine whether the character is unique within the string.
+                boolean isCharacterUniqueInString = (string.lastIndexOf(character)) == stringIndex;
+
+                // Determine whether the character is unique within the concatenated subsequence.
+                boolean isCharacterUniqueInSubsequence = !concatenatedSubsequence.contains(character);
+
+                // Store whether the character is unique within the string and within the subsequence.
+                areCharactersUnique = isCharacterUniqueInString && isCharacterUniqueInSubsequence;
+
+                // If the character isn't unique, don't check the rest of the characters in the string.
+                if (!areCharactersUnique) {
                     break;
                 }
-                charactersInString.add(character);
-            }
-            if (charactersInStringAreUnique) {
-                for (int stringIndex = 0; stringIndex < string.length(); stringIndex++) {
-                    charactersInConcatenatedString.add(string.charAt(stringIndex));
-                }
             }
 
-            // Update the length of the longest concatenated string.
-            lengthOfLongestConcatenatedString = Math.max(lengthOfLongestConcatenatedString,
-                    charactersInConcatenatedString.size());
+            // If the characters in the string are unique, add them to the concatenated subsequence.
+            if (areCharactersUnique) {
+                concatenatedSubsequence += string;
+
+                // Update the length of the longest concatenated subsequence if the new concatenated subsequence is longer than the previous concatenated subsequences.
+                lengthOfLongestConcatenatedSubsequence = Math.max(lengthOfLongestConcatenatedSubsequence,
+                        concatenatedSubsequence.length());
+            }
 
             // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-            lengthOfLongestConcatenatedString = maxLengthHelper(arr, arrIndex + 1, charactersInConcatenatedString,
-                    lengthOfLongestConcatenatedString);
+            lengthOfLongestConcatenatedSubsequence = maxLengthHelper(arr, arrIndex + 1, concatenatedSubsequence,
+                    lengthOfLongestConcatenatedSubsequence);
 
-            // Remove the characters in the string from the new character set if the string had unique characters.
-            if (charactersInStringAreUnique) {
-                for (int stringIndex = 0; stringIndex < string.length(); stringIndex++) {
-                    charactersInConcatenatedString.remove(string.charAt(stringIndex));
-                }
+            // If the characters in the string are unique, remove them from the concatenated subsequence.
+            if (areCharactersUnique) {
+                concatenatedSubsequence = concatenatedSubsequence.substring(0, concatenatedSubsequence.length() - string.length());
             }
         }
 
         // Return the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-        return lengthOfLongestConcatenatedString;
+        return lengthOfLongestConcatenatedSubsequence;
     }
 
     // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
     public int maxLength(List<String> arr) {
-        // Create a set to store the characters in the concatenated string.
-        int numberOfLettersInAlphabet = 26;
-        HashSet<Character> charactersInConcatenatedString = new HashSet<>(numberOfLettersInAlphabet);
-
-        // Declare a variable for storing the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-        int lengthOfLongestConcatenatedString = 0;
-
-        // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
         int arrIndex = 0;
-        return maxLengthHelper(arr, arrIndex, charactersInConcatenatedString, lengthOfLongestConcatenatedString);
-    }
-
-    // The main method for testing the solution.
-    public static void main(String[] args) throws Exception {
-        Solution solution = new Solution();
-
-        ArrayList<String> testCase = new ArrayList<>(Arrays.asList("un", "iq", "ue"));
-        int returnedSolution = solution.maxLength(testCase);
-        System.out.println(returnedSolution);
-
-        testCase = new ArrayList<>(Arrays.asList("aa", "bb"));
-        returnedSolution = solution.maxLength(testCase);
-        System.out.println(returnedSolution);
-
-        testCase = new ArrayList<>(Arrays.asList("abcdefghijklmnopqrstuvwxyz"));
-        returnedSolution = solution.maxLength(testCase);
-        System.out.println(returnedSolution);
-
-        testCase = new ArrayList<>(Arrays.asList("cha", "r", "act", "ers"));
-        returnedSolution = solution.maxLength(testCase);
-        System.out.println(returnedSolution);
+        String concatenatedSubsequence = "";
+        int lengthOfLongestConcatenatedSubsequence = 0;
+        return maxLengthHelper(arr, arrIndex, concatenatedSubsequence, lengthOfLongestConcatenatedSubsequence);
     }
 }
