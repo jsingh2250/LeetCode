@@ -1,68 +1,51 @@
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @see https://leetcode.com/problems/maximum-length-of-a-concatenated-string-with-unique-characters/discuss/2737493/PythonC%2B%2BJavaRust-0-ms-bit-and-set-operations-(with-detailed-comments)
+ */
 class Solution {
-    // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-    public int maxLengthHelper(List<String> arr, int arrIndex, String concatenatedSubsequence,
-            int lengthOfLongestConcatenatedSubsequence) {
-        // If the list index is equal to the size of the list, return the length of the longest concatenated subsequence.
-        if (arrIndex == arr.size()) {
-            return lengthOfLongestConcatenatedSubsequence;
+    // Determine the length of the longest string with unique characters that could be made from concatenating subsequences of the specified list of strings.
+    public int maxLength(List<String> arr) {
+        // Store the string elements from the list as a binary number in an array list if the string element has unique characters. Each bit in the binary number represents whether the element has the char associated with the bit. The nth bit in the integer represents the nth letter in the alphabet (e.g. 0th bit is 'a', 25th bit is 'z').
+        final int MAX_NUMBER_OF_ELEMENTS = 26;
+        ArrayList<Integer> uniqueStringsAsBinaryNumber = new ArrayList<>(MAX_NUMBER_OF_ELEMENTS);
+        for (String string : arr) {
+            Integer stringAsBinaryNumber = 0;
+            for (int i = 0; i < string.length(); i++) {
+                // Set the bit associated with the character. Duplicate characters will not set additional bits.
+                int characterAsBinaryNumber = 1 << (string.charAt(i) - 'a');
+                stringAsBinaryNumber |= characterAsBinaryNumber;
+            }
+            // If the number of set bits is the same as the number of characters in the string, the string has unique characters.
+            if (Integer.bitCount(stringAsBinaryNumber) == string.length()) {
+                uniqueStringsAsBinaryNumber.add(stringAsBinaryNumber);
+            }
         }
 
-        // Determine the length of each concatenated subsequence that has unique characters.
-        for (int i = arrIndex; i < arr.size(); i++) {
-            // Store the string from the list of strings.
-            String string = arr.get(i);
+        // Determine the maximum number of subsequences that can be formed from the unique strings.
+        int maxNumberOfSubsequences = (int) Math.pow(2, uniqueStringsAsBinaryNumber.size());
 
-            // Determine whether the characters in the string are unique within the string and within the subsequence.
-            boolean areCharactersUnique = false;
-            for (int stringIndex = 0; stringIndex < string.length(); stringIndex++) {
-                // Get a character from the string.
-                String character = string.substring(stringIndex, stringIndex + 1);
+        // Create an array list to store the concatenated subsequences with unique characters as binary numbers.
+        ArrayList<Integer> uniqueSubsequencesAsBinaryNumbers = new ArrayList<>(maxNumberOfSubsequences);
+        uniqueSubsequencesAsBinaryNumbers.add(0);
 
-                // Determine whether the character is unique within the string.
-                boolean isCharacterUniqueInString = (string.lastIndexOf(character)) == stringIndex;
-
-                // Determine whether the character is unique within the concatenated subsequence.
-                boolean isCharacterUniqueInSubsequence = !concatenatedSubsequence.contains(character);
-
-                // Store whether the character is unique within the string and within the subsequence.
-                areCharactersUnique = isCharacterUniqueInString && isCharacterUniqueInSubsequence;
-
-                // If the character isn't unique, don't check the rest of the characters in the string.
-                if (!areCharactersUnique) {
-                    break;
+        // Determine the length of the longest string with unique characters that could be made from concatenating subsequences of a list of strings.
+        int lengthOfLongestConcatenatedSubsequence = 0;
+        for (Integer stringAsBinaryNumber : uniqueStringsAsBinaryNumber) {
+            for (int i = (uniqueSubsequencesAsBinaryNumbers.size() - 1); i >= 0; i--) {
+                // If the characters in the subsequence are unique to the characters in the string, add a binary number to the subsequence array list to represent the new concatenated subsequence.
+                if ((uniqueSubsequencesAsBinaryNumbers.get(i) & stringAsBinaryNumber) == 0) {
+                    Integer newSubsequenceAsBinaryNumber = uniqueSubsequencesAsBinaryNumbers.get(i)
+                            | stringAsBinaryNumber;
+                    uniqueSubsequencesAsBinaryNumbers.add(newSubsequenceAsBinaryNumber);
+                    lengthOfLongestConcatenatedSubsequence = Math.max(lengthOfLongestConcatenatedSubsequence,
+                            Integer.bitCount(newSubsequenceAsBinaryNumber));
                 }
             }
-
-            // If the characters in the string are unique, add them to the concatenated subsequence.
-            if (areCharactersUnique) {
-                concatenatedSubsequence += string;
-
-                // Update the length of the longest concatenated subsequence if the new concatenated subsequence is longer than the previous concatenated subsequences.
-                lengthOfLongestConcatenatedSubsequence = Math.max(lengthOfLongestConcatenatedSubsequence,
-                        concatenatedSubsequence.length());
-            }
-
-            // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-            lengthOfLongestConcatenatedSubsequence = maxLengthHelper(arr, arrIndex + 1, concatenatedSubsequence,
-                    lengthOfLongestConcatenatedSubsequence);
-
-            // If the characters in the string are unique, remove them from the concatenated subsequence.
-            if (areCharactersUnique) {
-                concatenatedSubsequence = concatenatedSubsequence.substring(0, concatenatedSubsequence.length() - string.length());
-            }
         }
 
-        // Return the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
+        // Return the length of the longest string with unique characters that could be made from concatenating subsequences of the specified list of strings.
         return lengthOfLongestConcatenatedSubsequence;
-    }
-
-    // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
-    public int maxLength(List<String> arr) {
-        int arrIndex = 0;
-        String concatenatedSubsequence = "";
-        int lengthOfLongestConcatenatedSubsequence = 0;
-        return maxLengthHelper(arr, arrIndex, concatenatedSubsequence, lengthOfLongestConcatenatedSubsequence);
     }
 }

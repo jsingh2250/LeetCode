@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.List;
 
-class Solution_old {
+class Solution1 {
     // Determine the length of the longest string with unique characters that could be made by concatenating subsequences of the specified list of strings.
     public int maxLengthHelper(List<String> arr, int arrIndex, HashSet<Character> charactersInConcatenatedString,
             int lengthOfLongestConcatenatedString) {
