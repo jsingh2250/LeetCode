@@ -2,10 +2,10 @@ class Solution {
     public boolean isValidSudoku(char[][] board) {
         // Declare variables that can store which digits are in each row, column, and sub-box.
         final int NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS = 9;
-        int[] binaryEncodedNumbersInRows = new int[NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS];
-        int[] binaryEncodedNumbersInColumns = new int[NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS];
+        short[] binaryEncodedNumbersInRows = new short[NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS];
+        short[] binaryEncodedNumbersInColumns = new short[NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS];
         final int NUMBER_OF_ROWS_OR_COLUMNS_OF_SUB_BOXES = 3;
-        int[][] binaryEncodedNumbersInSubBoxes = new int[NUMBER_OF_ROWS_OR_COLUMNS_OF_SUB_BOXES][NUMBER_OF_ROWS_OR_COLUMNS_OF_SUB_BOXES];
+        short[][] binaryEncodedNumbersInSubBoxes = new short[NUMBER_OF_ROWS_OR_COLUMNS_OF_SUB_BOXES][NUMBER_OF_ROWS_OR_COLUMNS_OF_SUB_BOXES];
 
         // If any of the rows, columns, or sub-boxes contain duplicate numbers, the sudoku is not valid. Return false.
         for (int row = 0; row < NUMBER_OF_ROWS_OR_COLUMNS_OF_CELLS; row++) {
