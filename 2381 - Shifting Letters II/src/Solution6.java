@@ -11,7 +11,7 @@
 // 0 <= directioni <= 1
 // s consists of lowercase English letters.
 
-class Solution {
+class Solution6 {
     public String shiftingLetters(String s, int[][] shifts) {
         // Declare a variable to store the inclusive start index and exlusive end index of the cumulative shifts of the characters in the specified string.
         // Length should be one greater than string to the array to show that the last character in the string is the exclusive end index of the cumulative shift.
@@ -39,17 +39,15 @@ class Solution {
         for (int letterIndex = 0; letterIndex < s.length(); letterIndex++) {
             // Calculate the shifted char value.
             cumulativeShiftAmount += cumulativeShifts[letterIndex];
-            int shiftedCharValue = s.charAt(letterIndex) + (cumulativeShiftAmount % 26);
+            int shiftedCharValue = (s.charAt(letterIndex) - 'a' + cumulativeShiftAmount) % 26;
 
             // Adjust the char value so it's within the range of the lowercase letters.
-            if (shiftedCharValue < 'a') {
+            if (shiftedCharValue < 0) {
                 shiftedCharValue += 26;
-            } else if (shiftedCharValue > 'z') {
-                shiftedCharValue -= 26;
             }
 
             // Append the char value to the string builder.
-            string.append((char) shiftedCharValue);
+            string.append((char) ('a' + shiftedCharValue));
         }
 
         // Return the shifted string.
