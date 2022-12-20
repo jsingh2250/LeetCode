@@ -4,7 +4,7 @@
 // 1 <= temperatures.length <= 10^5
 // 30 <= temperatures[i] <= 100
 
-class Solution {
+class Solution3 {
     public int[] dailyTemperatures(int[] temperatures) {
         int[] numberOfDaysUntilWarmerTemperatureByDay = new int[temperatures.length];
 
