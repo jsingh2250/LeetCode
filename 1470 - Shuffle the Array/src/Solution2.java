@@ -7,7 +7,7 @@
 // nums.length == 2n
 // 1 <= nums[i] <= 10^3
 
-class Solution {
+class Solution2 {
     public int[] shuffle(int[] nums, int n) {
         int[] shuffledNumbers = new int[nums.length];
 
